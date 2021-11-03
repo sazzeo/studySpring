@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 가장 먼저 올라가는 Context : 다른 Context빈들이 참조해야하는 전역 빈들을 여기 올림!! -->
+
+	<!-- mybatis 연결할 dataSource등록 -->
+	<bean id="dataSource"
+		class="oracle.jdbc.pool.OracleDataSource">
+		<property name="user" value="bm" />
+		<property name="password" value="1234" />
+		<property name="URL"
+			value="jdbc:oracle:thin:@localhost:1521:xe" />
+	</bean>
+
+	<!-- sqlSession 을 위해 bean등록 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation"
+			value="classpath:mybatis/config.xml" />
+	</bean>
+	
+	
+	<!-- 마이바티스와 스프링 연동을 위해서 만드는 sqlSessionTemplate 매개변수로 위에 factory를 받음 -->
+	<bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	
+	
+
+	<!-- 프록시객체 만들어줌 : 매개변수로 내가 만든 인터페이스 넣음 -->
+	<!-- MapperFactoryBean이 프록시객체를 만들어줌 -->
+	<!-- <bean id="mapperFactoryBean" class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+		<property name="mapperInterface" value="com.kh.spring.member.model.repository.MemberRepository" 
+		/> <property name="sqlSessionFactory" ref="sqlSessionFactory" /> </bean> -->
+	
+	
+	<!-- mapper annotation을 더 쉽게 쓰기 위해 사용함 
+	annotaion속성에 들어간 해당 클래스 어노테이션이 붙은 애들만 스캔해줌
+	반드시 얘가 붙어있어야만 에러가 없음
+	
+	=> mybatis-spring 태그는 SqlSessionFactory나 Template없이 매퍼를 만들어 주입해준다.
+	요 매퍼들은 config.xml를 거쳐 sqlSession이 자동 주입됨
+	
+	
+	-->
+	<mybatis-spring:scan base-package="com.kh.spring" annotation="org.apache.ibatis.annotations.Mapper"/>
+
+
+
+	<!-- 메일 발송을 위해 추가해야하는 bean
+		javaMailSenderImpl
+	 -->
+	 
+	 <bean id="javaMailSenderImpl" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	 	<property name="host" value="smtp.gmail.com"></property>
+	 	<property name="port" value="587"></property>
+	 	<property name="username" value="jee4870@gmail.com"></property>
+	 	<property name="password" value="!Tjs24fkdlwm"></property>
+	 	<property name="javaMailProperties">
+	 		<props>
+	 			<prop key="mail.smtp.starttls.enable">true</prop>
+	 			<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+	 			<prop key="mail.smtp.auth">true</prop>
+	 			<prop key="mail.debug">ture</prop>
+	 		</props>
+	 	</property>
+	 </bean>
+	 
+	 
+	 
+	 <!-- HttpConnection을 위한 bean
+	 
+	 1) SimpleClientHttpRequestFactory
+ 		RestTemplate의 생성자 매개변수에 들어갈 객체임
+ 		얘는 timeout시간을 설정할 수 있음
+	  -->
+	 <bean id="simpleClientHttpRequestFactory" class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+	 	<property name="connectTimeout" value="5000"></property>
+	 	<property name="readTimeout" value="5000"></property>
+	 </bean>
+	 
+	 <!-- 
+	 
+	 2) RestTemplate : http통신을 위한 클래스
+	 
+	  -->
+	 <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	 	<constructor-arg name="requestFactory" ref="simpleClientHttpRequestFactory"></constructor-arg>
+	 
+	 </bean>
+	 
+	 
+	 <!-- Jackson 의 ObjectMapper빈 : 메모리를 아끼고 쉬운 사용을 위해 올림 -->
+	 <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"></bean>
+	 
+</beans>

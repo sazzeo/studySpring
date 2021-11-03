@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings> <!-- 스네이크 케이스를 카멜케이스로 변경 -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+	
+	<!-- 풀네임 줄여주기 위해 별명 설정 -->
+	<typeAliases>
+		  <typeAlias alias="Member" type="com.kh.spring.member.model.dto.Member"/>
+	</typeAliases>
+	<mappers>
+		<!-- 매퍼틑 Dao 1개당 1개씩 있음 -->
+		<mapper resource="mybatis/mapper/mybatisMapper.xml" />
+		<mapper resource="mybatis/mapper/mybatisMapper2.xml" />
+	</mappers>
+</configuration>
+
+<!-- 매퍼등록은 root-context의 sqlSession 밑에서 함 -->
