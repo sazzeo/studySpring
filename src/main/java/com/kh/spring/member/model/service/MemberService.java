@@ -1,8 +1,8 @@
 package com.kh.spring.member.model.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -13,7 +13,10 @@ import com.kh.spring.member.model.dto.Member;
 import com.kh.spring.member.model.repository.MemberRepository;
 import com.kh.spring.member.validator.JoinForm;
 
+import lombok.Data;
+
 @Service
+@Data //롬복..
 public class MemberService {
 	
 	@Autowired //Autowired: 자동으로 빈에있는 memberRepository담아줌
@@ -25,10 +28,15 @@ public class MemberService {
 	@Autowired
 	private RestTemplate http;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 
 
 	public void insertMember(JoinForm form) {
 		memberRepository.insertMember(form);
+	
+		
 	}
 
 	public Member memberLoginImpl(Member member) {

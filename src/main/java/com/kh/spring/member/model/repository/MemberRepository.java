@@ -21,6 +21,5 @@ public interface MemberRepository {
 	@Select("select * from member where user_id=#{userId}")
 	Member selectMemberByUserId(String userId);
 
-
 	
 }

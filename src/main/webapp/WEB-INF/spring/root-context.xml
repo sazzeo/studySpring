@@ -101,4 +101,11 @@
 	 <!-- Jackson 의 ObjectMapper빈 : 메모리를 아끼고 쉬운 사용을 위해 올림 -->
 	 <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"></bean>
 	 
+	 
+	 <!-- 비밀번호 암호화 : DelegatingPasswordEncoder
+	 PasswordEncoderFactories 클래스의 팩토리 메소드에서 만들어 준다. 
+	  -->
+	 <bean id="passwordEncoder" class="org.springframework.security.crypto.factory.PasswordEncoderFactories" factory-method="createDelegatingPasswordEncoder"></bean>
+	 
+	 
 </beans>

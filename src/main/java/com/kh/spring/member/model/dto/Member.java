@@ -2,6 +2,9 @@ package com.kh.spring.member.model.dto;
 
 import java.sql.Date;
 
+import lombok.Data;
+
+@Data
 public class Member {
 
 	private String userId;

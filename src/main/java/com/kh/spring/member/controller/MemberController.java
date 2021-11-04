@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,8 @@ public class MemberController {
 	private joinFormValidator joinFormValidator;
 	
 	
+	
+	
 
 	public MemberController(joinFormValidator joinFormValidator) {
 		super();
@@ -61,6 +64,7 @@ public class MemberController {
 		//WebDataBinder : 객체가 컨트롤러로 넘어가기 전에 파라미터 값들을 
 		//객체에 바인드해주는 역할
 		webDataBinder.addValidators(joinFormValidator);
+		
 		
 	}
 
@@ -145,7 +149,7 @@ public class MemberController {
 		
 		
 		String token = UUID.randomUUID().toString();
-		session.setAttribute("serverToken", token);
+		session.setAttribute("persistToken", token);
 		session.setAttribute("userInfo" , form);
 		
 		memberService.authenticateUserByEmail(form , token);
@@ -160,16 +164,24 @@ public class MemberController {
 	}
 	
 	
-
-	@GetMapping("joinImpl")
-	public String joinImpl(
-			Model model
-			) {
+	
+	@GetMapping("join-impl/{token}")
+	public String joinImpl(@PathVariable String token 
+			,@SessionAttribute(value="persistToken" , required =false) String persistToken
+			,@SessionAttribute(value="userInfo" , required=false) JoinForm form
+			,HttpSession session
+			,RedirectAttributes redirectAttrs) {
 		
-		model.getAttribute("userInfo");
-		//memberService.insertMember(form);
+		if(!token.equals(persistToken)) {
+			throw new HandleableException(ErrorCode.AUTHENTICATION_FAILED_ERROR);
+			
+		}
 		
-		return "member/login";
+		memberService.insertMember(form);
+		redirectAttrs.addFlashAttribute("message" , "회원가입을 축하합니다");
+		session.removeAttribute("userInfo");
+		session.removeAttribute("persistToken");
+		return "redirect:/";
 	}
 	
 	
