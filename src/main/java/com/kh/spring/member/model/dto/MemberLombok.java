@@ -11,3 +11,6 @@ public class MemberLombok {
 	private int age;
 
 }
+
+
+

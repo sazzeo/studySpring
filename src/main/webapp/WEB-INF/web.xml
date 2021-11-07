@@ -53,7 +53,7 @@
 	</servlet-mapping>
 	
 	
-	<!-- 404에러 따로 설정 -->
+	<!-- 404에러 페이지 설정 -->
 	<error-page>
 		<error-code>404</error-code>
 		<location>/WEB-INF/views/error/404.jsp</location>

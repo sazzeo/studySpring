@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
+//메일 템플릿 보내기
 @Controller
 public class MailHandler {
 	

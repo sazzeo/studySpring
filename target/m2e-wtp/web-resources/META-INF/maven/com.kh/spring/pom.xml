@@ -60,6 +60,12 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.9.7</version>
+		</dependency>
+		
 
 		<!-- Logging -->
 		<dependency>
@@ -230,8 +236,8 @@
 			<artifactId>spring-security-crypto</artifactId>
 			<version>5.5.2</version>
 		</dependency>
-		
-		<!-- 롬복 : 비밀번호 암호화 서포트해주는 거 -->
+
+		<!-- 롬복 : dto쉽게 만들기 -->
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -239,6 +245,24 @@
 			<version>1.18.20</version>
 			<scope>provided</scope>
 		</dependency>
+
+
+
+		<!-- commons-io , ommons-fileupload: 파일 업로드/다운로드 -->
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
+
 
 
 
