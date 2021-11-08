@@ -55,6 +55,9 @@
 					-default: 데이터 베이스의 격리레벨을 따라감(보통 이거씀)
 					-read_commited : commit이 끝난 데이터만 읽기를 허용 (이게 오라클 default)
 					-read_uncommited : commit이 끝나지 않은 데이터도 읽기를 허용
+					-repeatable_read : select문이 사용되는 데이터에 lock을 걸어 수정이 불가능하게 처리
+					
+				
 				2) rollback-for: 어떤 예외가 발생했을 때 롤백 시킬지 지정
 				3) no-rollback-for: 어떤 예외가 발생했을 때 롤백 시키지 않을지 지정
 				4) propagation: 전파속성, 기존 트랜잭션 유무 여부에 따라 새로운 트랜잭션을 생성하는 정책
