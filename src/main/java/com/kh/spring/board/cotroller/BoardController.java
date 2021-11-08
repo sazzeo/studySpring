@@ -3,11 +3,13 @@ package com.kh.spring.board.cotroller;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,12 +71,25 @@ public class BoardController {
 			Board board
 			,@RequestParam List<MultipartFile> files
 			,@SessionAttribute("authentication") Member member) {
-		
+		logger.debug("파일 사이즈: "+files.size());
+		logger.debug("파일 0번 : "+files.get(0));
+		logger.debug("현재 비어있니? :" +  files.get(0).isEmpty());
 		
 		board.setUserId(member.getUserId());
 		boardService.insertBoard(files, board);
 		
 		return "redirect:/";
+		
+	};
+	
+	
+	@GetMapping("board-detail")
+	public void boardDetail(Model model, String bdIdx){
+		
+		
+		Map<String, Object> commadMap= boardService.selectBoardByIdx(bdIdx);
+		model.addAllAttributes(commadMap); //현재 commandMap에있는 키값으로 속성 일일히 담아서 보내줌
+	
 		
 	};
 	

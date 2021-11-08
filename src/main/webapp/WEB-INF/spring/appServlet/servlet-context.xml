@@ -4,9 +4,11 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
@@ -56,23 +58,37 @@
 					-read_commited : commit이 끝난 데이터만 읽기를 허용 (이게 오라클 default)
 					-read_uncommited : commit이 끝나지 않은 데이터도 읽기를 허용
 					-repeatable_read : select문이 사용되는 데이터에 lock을 걸어 수정이 불가능하게 처리
-					
+				    -serializable : select 문이 사용되는 데이터에 lock을 걸어 수정 및 입력이 불가능하게 처리
 				
 				2) rollback-for: 어떤 예외가 발생했을 때 롤백 시킬지 지정
 				3) no-rollback-for: 어떤 예외가 발생했을 때 롤백 시키지 않을지 지정
 				4) propagation: 전파속성, 기존 트랜잭션 유무 여부에 따라 새로운 트랜잭션을 생성하는 정책
+					- required : 이미 진행중인 트랜잭션이 있으면 해당 트랜잭션에 포함, 아니면 새로운 트랜잭션 생성
+					- required_new : 항상 새로운 트랜잭션 생성 (안씀)
+					- mondatory : 이미 진행중인 트랜잭션이 있어야만 작업을 수행, 없으면 예외를 발생시킴
+					- never : 진행중인 트랜잭션이 없어야만 작업 수행 , 있으면 예외를 발생시킴
+					- nested : 진행중인 트랜잭션이 있으면 중첩된 트랜잭션 실행
+					- supports : 진행중인 트랜잭션이 있으면 트랜잭션에 포함. 없으면 트랜잭션을 생성하지 않음.
+					
 				5) read-only: 읽기 전용 , DML이 발생하면 에러 발생시킴
 				6) timeout: 작업에 수행되는 시간이 지정한 시간을 넘기면 rollback처리
 			
 			 -->
-			<tx:method name="select*" isolation="DEFAULT"/>
-			<tx:method name="insert*"/>
-			<tx:method name="delete*"/>
-			<tx:method name="update*"/>
+
+			<tx:method name="select*"  read-only="true"/>
+			<tx:method name="insert*" isolation="DEFAULT"  propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="Exception"/>
 			<!-- select* , insert* , delete* ,update*로 시작하는 모든 메서드들에 대해 트랜잭션 관리 -->
 		</tx:attributes>
 	
 	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* com.kh.spring..*.*ServiceImpl.*(..))" id="txPointCut"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut"/>
+	</aop:config>
+	
 	
 	<tx:annotation-driven/>
 	
